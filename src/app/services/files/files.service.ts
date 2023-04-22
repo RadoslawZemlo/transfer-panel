@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, take } from 'rxjs';
-import { File } from 'src/app/interfaces/file.interface';
+import { File } from '@interfaces/file.interface';
 
 @Injectable({
   providedIn: 'root',

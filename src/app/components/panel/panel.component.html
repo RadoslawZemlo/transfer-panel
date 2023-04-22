@@ -1,0 +1,9 @@
+<div class="panel">
+  <div *ngIf="files$ | async as files" class="panel__files">
+    <ng-container *ngFor="let file of files">
+      <div class="tile">
+        {{ file.name }}
+      </div>
+    </ng-container>
+  </div>
+</div>
