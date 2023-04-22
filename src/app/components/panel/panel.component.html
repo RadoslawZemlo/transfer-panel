@@ -1,8 +1,22 @@
 <div class="panel">
   <div *ngIf="files$ | async as files" class="panel__files">
+    <div class="tile tile--top"></div>
+
     <ng-container *ngFor="let file of files">
       <div class="tile">
-        {{ file.name }}
+        <p>
+          {{ file.name }}
+        </p>
+      </div>
+    </ng-container>
+  </div>
+
+  <div *ngIf="devices$ | async as devices" class="panel__devices">
+    <ng-container *ngFor="let device of devices">
+      <div class="tile tile--top">
+        <p>
+          {{ device.name }}
+        </p>
       </div>
     </ng-container>
   </div>

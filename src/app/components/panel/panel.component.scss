@@ -1,0 +1,31 @@
+@mixin grid($display, $grid-gap, $grid-template-column) {
+  display: $display;
+  grid-gap: $grid-gap;
+  grid-template-columns: $grid-template-column;
+}
+
+.panel {
+  @include grid(grid, 2vw, 1fr 3fr);
+  padding: 5vw;
+  width: 100vw;
+
+  &__files {
+    @include grid(grid, 1.5vh, null);
+  }
+
+  &__devices {
+    @include grid(grid, 2vw, repeat(3, 1fr));
+  }
+}
+
+.tile {
+  border: 0.1rem solid #000;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--top {
+    border: none;
+  }
+}

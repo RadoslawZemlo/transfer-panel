@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { FilesService } from '@services/files/files.service';
 import { DevicesService } from '@services/devices/devices.service';
 import { File } from '@interfaces/file.interface';
+import { Device } from '@interfaces/device.interface';
 
 @Component({
   selector: 'app-panel',
@@ -11,6 +12,7 @@ import { File } from '@interfaces/file.interface';
 })
 export class PanelComponent implements OnInit {
   files$: Observable<File[]> = this.filesService.files$;
+  devices$: Observable<Device[]> = this.devicesService.devices$;
 
   constructor(
     private readonly filesService: FilesService,
@@ -19,5 +21,6 @@ export class PanelComponent implements OnInit {
 
   ngOnInit(): void {
     this.filesService.getFiles();
+    this.devicesService.getDevices();
   }
 }
