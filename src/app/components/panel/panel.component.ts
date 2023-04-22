@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FilesService } from '@services/files/files.service';
+import { DevicesService } from '@services/devices/devices.service';
 import { File } from '@interfaces/file.interface';
 
 @Component({
@@ -11,7 +12,10 @@ import { File } from '@interfaces/file.interface';
 export class PanelComponent implements OnInit {
   files$: Observable<File[]> = this.filesService.files$;
 
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly devicesService: DevicesService
+  ) {}
 
   ngOnInit(): void {
     this.filesService.getFiles();
