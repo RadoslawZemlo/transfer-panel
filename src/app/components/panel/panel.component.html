@@ -13,10 +13,26 @@
 
   <div *ngIf="devices$ | async as devices" class="panel__devices">
     <ng-container *ngFor="let device of devices">
-      <div class="tile tile--top">
-        <p>
-          {{ device.name }}
-        </p>
+      <div class="device">
+        <div class="tile tile--top">
+          <p>
+            {{ device.name }}
+          </p>
+        </div>
+
+        <div *ngIf="device.files" class="device__files">
+          <ng-container *ngFor="let deviceFile of device.files">
+            <div class="tile">
+              <p>
+                {{ deviceFile.id }}
+              </p>
+
+              <div class="progress-bar">
+                {{ deviceFile.progress }}
+              </div>
+            </div>
+          </ng-container>
+        </div>
       </div>
     </ng-container>
   </div>

@@ -1,20 +1,34 @@
-@mixin grid($display, $grid-gap, $grid-template-column) {
-  display: $display;
+@mixin grid($grid-gap, $grid-template-column) {
+  display: grid;
   grid-gap: $grid-gap;
   grid-template-columns: $grid-template-column;
 }
 
+@mixin flex-colunm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+}
+
 .panel {
-  @include grid(grid, 2vw, 1fr 3fr);
+  @include grid(2vw, 1fr 3fr);
   padding: 5vw;
   width: 100vw;
 
   &__files {
-    @include grid(grid, 1.5vh, null);
+    @include flex-colunm();
   }
 
   &__devices {
-    @include grid(grid, 2vw, repeat(3, 1fr));
+    @include grid(2vw, repeat(3, 1fr));
+  }
+}
+
+.device {
+  @include flex-colunm();
+
+  &__files {
+    @include flex-colunm();
   }
 }
 
@@ -22,6 +36,7 @@
   border: 0.1rem solid #000;
   height: 3rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
