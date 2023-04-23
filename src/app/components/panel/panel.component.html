@@ -1,39 +1,41 @@
 <div class="panel">
-  <div *ngIf="files$ | async as files" class="panel__files">
-    <div class="tile tile--top"></div>
+  <ng-container *ngIf="files$ | async as files">
+    <div class="panel__files">
+      <div class="tile tile--top"></div>
 
-    <ng-container *ngFor="let file of files">
-      <div class="tile">
-        <p>
-          {{ file.name }}
-        </p>
-      </div>
-    </ng-container>
-  </div>
-
-  <div *ngIf="devices$ | async as devices" class="panel__devices">
-    <ng-container *ngFor="let device of devices">
-      <div class="device">
-        <div class="tile tile--top">
+      <ng-container *ngFor="let file of files">
+        <div class="tile">
           <p>
-            {{ device.name }}
+            {{ file.name }}
           </p>
         </div>
+      </ng-container>
+    </div>
 
-        <div *ngIf="device.files" class="device__files">
-          <ng-container *ngFor="let deviceFile of device.files">
-            <div class="tile">
-              <p>
-                {{ deviceFile.id }}
-              </p>
+    <div *ngIf="devices$ | async as devices" class="panel__devices">
+      <ng-container *ngFor="let device of devices">
+        <div class="device">
+          <div class="tile tile--top">
+            <p>
+              {{ device.name }}
+            </p>
+          </div>
 
-              <div class="progress-bar">
-                {{ deviceFile.progress }}
+          <div *ngIf="device.files" class="device__files">
+            <ng-container *ngFor="let deviceFile of device.files">
+              <div class="tile">
+                <p>
+                  {{ deviceFile.id | fileName : files }}
+                </p>
+
+                <div class="progress-bar">
+                  {{ deviceFile.progress }}
+                </div>
               </div>
-            </div>
-          </ng-container>
+            </ng-container>
+          </div>
         </div>
-      </div>
-    </ng-container>
-  </div>
+      </ng-container>
+    </div>
+  </ng-container>
 </div>
