@@ -4,7 +4,7 @@
       <div class="tile tile--top"></div>
 
       <ng-container *ngFor="let file of files">
-        <div (click)="updateDevicesFiles(file.id)" class="tile">
+        <div (click)="updateDevicesFiles(file.id)" appHighlight class="tile">
           <p>
             {{ file.name }}
           </p>

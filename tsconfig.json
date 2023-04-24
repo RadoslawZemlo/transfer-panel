@@ -22,7 +22,9 @@
     "paths": {
       "@components/*": ["src/app/components/*"],
       "@services/*": ["src/app/services/*"],
-      "@interfaces/*": ["src/app/interfaces/*"]
+      "@interfaces/*": ["src/app/interfaces/*"],
+      "@pipes/*": ["src/app/pipes/*"],
+      "@directives/*": ["src/app/directives/*"]
     }
   },
   "angularCompilerOptions": {
