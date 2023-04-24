@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { FilesService } from '@services/files/files.service';
 import { DevicesService } from '@services/devices/devices.service';
 import { File } from '@interfaces/file.interface';
@@ -22,5 +22,9 @@ export class PanelComponent implements OnInit {
   ngOnInit(): void {
     this.filesService.getFiles();
     this.devicesService.getDevices();
+  }
+
+  updateDevicesFiles(selectedFileId: number) {
+    this.devicesService.updateDevices(selectedFileId);
   }
 }
