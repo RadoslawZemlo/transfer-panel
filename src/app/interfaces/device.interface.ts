@@ -1,4 +1,4 @@
-interface DeviceFile {
+export interface DeviceFile {
   id: number;
   progress: number;
 }
@@ -6,6 +6,6 @@ interface DeviceFile {
 export interface Device {
   id: number;
   name: string;
-  size: number;
+  download: number;
   files: DeviceFile[];
 }

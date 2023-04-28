@@ -48,4 +48,19 @@
     background: #000;
     color: #fff;
   }
+
+  &--device-file {
+    justify-content: space-around;
+  }
+}
+
+.bar {
+  border: 0.1rem solid #000;
+  height: 30%;
+  width: 96%;
+
+  &__progress {
+    background: #000;
+    height: 100%;
+  }
 }

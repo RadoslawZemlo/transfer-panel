@@ -3,8 +3,8 @@
     <div class="panel__files">
       <div class="tile tile--top"></div>
 
-      <ng-container *ngFor="let file of files">
-        <div (click)="updateDevicesFiles(file.id)" appHighlight class="tile">
+      <ng-container *ngFor="let file of files; trackBy: filesTrackBy">
+        <div (click)="addFileToDevice(file)" appHighlight class="tile">
           <p>
             {{ file.name }}
           </p>
@@ -13,7 +13,7 @@
     </div>
 
     <div *ngIf="devices$ | async as devices" class="panel__devices">
-      <ng-container *ngFor="let device of devices">
+      <ng-container *ngFor="let device of devices; trackBy: devicesTrackBy">
         <div class="device">
           <div class="tile tile--top">
             <p>
@@ -22,14 +22,22 @@
           </div>
 
           <div *ngIf="device.files" class="device__files">
-            <ng-container *ngFor="let deviceFile of device.files">
-              <div class="tile">
+            <ng-container
+              *ngFor="
+                let deviceFile of device.files;
+                trackBy: deviceFilesTrackBy
+              "
+            >
+              <div class="tile tile--device-file">
                 <p>
                   {{ deviceFile.id | fileName : files }}
                 </p>
 
-                <div class="progress-bar">
-                  {{ deviceFile.progress }}
+                <div class="bar">
+                  <div
+                    class="bar__progress"
+                    [ngStyle]="{ width: deviceFile.progress | percent }"
+                  ></div>
                 </div>
               </div>
             </ng-container>
