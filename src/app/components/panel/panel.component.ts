@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   Observable,
   Subject,
@@ -6,6 +6,8 @@ import {
   interval,
   map,
   of,
+  take,
+  takeUntil,
   takeWhile,
   tap,
 } from 'rxjs';
@@ -19,11 +21,12 @@ import { Device, DeviceFile } from '@interfaces/device.interface';
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss'],
 })
-export class PanelComponent implements OnInit {
+export class PanelComponent implements OnInit, OnDestroy {
   files$: Observable<File[]> = this.filesService.files$;
   devices$: Observable<Device[]> = this.devicesService.devices$;
 
   private downloadQueue$ = new Subject<{ file: File; device: Device }>();
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private readonly filesService: FilesService,
@@ -38,26 +41,19 @@ export class PanelComponent implements OnInit {
       .pipe(
         concatMap(({ file, device }) => {
           return this.downloadFile(file, device);
-        })
+        }),
+        takeUntil(this.unsubscribe$)
       )
       .subscribe();
   }
 
-  addFileToDevice(file: File): void {
-    this.devices$
-      .pipe(
-        tap((devices) => {
-          devices.forEach((device) => {
-            if (!device.files.find((f: DeviceFile) => f.id === file.id)) {
-              device.files.push({ id: file.id, progress: 0 });
-              this.devicesService.updateDevice(device).subscribe(() => {
-                this.addToDownloadQueue(file, device);
-              });
-            }
-          });
-        })
-      )
-      .subscribe();
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  private addToDownloadQueue(file: File, device: Device): void {
+    this.downloadQueue$.next({ file, device });
   }
 
   private downloadFile(file: File, device: Device): Observable<void> {
@@ -70,10 +66,14 @@ export class PanelComponent implements OnInit {
         tap(() => {
           if (fileToDownload.progress < 1) {
             fileToDownload.progress += device.download / file.size;
+
             if (fileToDownload.progress >= 1) {
               fileToDownload.progress = 1;
 
-              this.devicesService.updateDevice(device).subscribe();
+              this.devicesService
+                .updateDevice(device)
+                .pipe(take(1))
+                .subscribe();
             }
           }
         }),
@@ -85,8 +85,26 @@ export class PanelComponent implements OnInit {
     return of(undefined);
   }
 
-  private addToDownloadQueue(file: File, device: Device): void {
-    this.downloadQueue$.next({ file, device });
+  addFileToDevice(file: File): void {
+    this.devices$
+      .pipe(
+        tap((devices) => {
+          devices.forEach((device) => {
+            if (!device.files.find((f: DeviceFile) => f.id === file.id)) {
+              device.files.push({ id: file.id, progress: 0 });
+
+              this.devicesService
+                .updateDevice(device)
+                .pipe(take(1))
+                .subscribe(() => {
+                  this.addToDownloadQueue(file, device);
+                });
+            }
+          });
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe();
   }
 
   filesTrackBy(index: number, file: File) {
