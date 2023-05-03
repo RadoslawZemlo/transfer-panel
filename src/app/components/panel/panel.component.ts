@@ -39,9 +39,7 @@ export class PanelComponent implements OnInit, OnDestroy {
 
     this.downloadQueue$
       .pipe(
-        concatMap(({ file, device }) => {
-          return this.downloadFile(file, device);
-        }),
+        concatMap(({ file, device }) => this.downloadFile(file, device)),
         takeUntil(this.unsubscribe$)
       )
       .subscribe();
@@ -52,54 +50,47 @@ export class PanelComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  private addToDownloadQueue(file: File, device: Device): void {
-    this.downloadQueue$.next({ file, device });
+  private findDeviceFile(file: File, device: Device): DeviceFile | undefined {
+    return device.files.find((f: DeviceFile): boolean => f.id === file.id);
   }
 
   private downloadFile(file: File, device: Device): Observable<void> {
-    const fileToDownload = device.files.find(
-      (f: DeviceFile) => f.id === file.id
-    );
+    const fileToDownload = this.findDeviceFile(file, device);
 
-    if (fileToDownload) {
-      return interval(1000).pipe(
-        tap(() => {
-          if (fileToDownload.progress < 1) {
-            fileToDownload.progress += device.download / file.size;
-
-            if (fileToDownload.progress >= 1) {
-              fileToDownload.progress = 1;
-
-              this.devicesService
-                .updateDevice(device)
-                .pipe(take(1))
-                .subscribe();
-            }
-          }
-        }),
-        takeWhile(() => fileToDownload.progress < 1, true),
-        map(() => undefined)
-      );
+    if (!fileToDownload) {
+      return of(undefined);
     }
 
-    return of(undefined);
+    return interval(1000).pipe(
+      tap(() => {
+        fileToDownload.progress += device.download / file.size;
+
+        if (fileToDownload.progress >= 1) {
+          fileToDownload.progress = 1;
+
+          this.devicesService.updateDevice(device).pipe(take(1)).subscribe();
+        }
+      }),
+      takeWhile(() => fileToDownload.progress < 1, true),
+      map(() => undefined)
+    );
   }
 
   addFileToDevice(file: File): void {
     this.devices$
       .pipe(
         tap((devices) => {
-          devices.forEach((device) => {
-            if (!device.files.find((f: DeviceFile) => f.id === file.id)) {
-              device.files.push({ id: file.id, progress: 0 });
-
-              this.devicesService
-                .updateDevice(device)
-                .pipe(take(1))
-                .subscribe(() => {
-                  this.addToDownloadQueue(file, device);
-                });
+          devices.forEach((device): void => {
+            if (this.findDeviceFile(file, device)) {
+              return;
             }
+
+            device.files.push({ id: file.id, progress: 0 });
+
+            this.devicesService
+              .updateDevice(device)
+              .pipe(take(1))
+              .subscribe(() => this.downloadQueue$.next({ file, device }));
           });
         }),
         takeUntil(this.unsubscribe$)
@@ -107,15 +98,15 @@ export class PanelComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  filesTrackBy(index: number, file: File) {
+  filesTrackBy(index: number, file: File): number {
     return file.id;
   }
 
-  devicesTrackBy(index: number, device: Device) {
+  devicesTrackBy(index: number, device: Device): number {
     return device.id;
   }
 
-  deviceFilesTrackBy(index: number, deviceFile: DeviceFile) {
+  deviceFilesTrackBy(index: number, deviceFile: DeviceFile): number {
     return deviceFile.id;
   }
 }
