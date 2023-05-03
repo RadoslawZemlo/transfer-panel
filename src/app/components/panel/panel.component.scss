@@ -33,7 +33,9 @@
 }
 
 .tile {
-  border: 0.1rem solid #000;
+  border: 0.05rem solid #000;
+  border-radius: 0.2rem;
+  box-shadow: 0 0.6rem 0.6rem -0.3rem #000;
   height: 3rem;
   display: flex;
   flex-direction: column;
@@ -42,6 +44,12 @@
 
   &--top {
     border: none;
+    box-shadow: none;
+    font-weight: bold;
+  }
+
+  &--file {
+    cursor: pointer;
   }
 
   &--clicked {
@@ -50,14 +58,16 @@
   }
 
   &--device-file {
-    justify-content: space-around;
+    justify-content: space-evenly;
   }
 }
 
 .bar {
-  border: 0.1rem solid #000;
+  border: 0.05rem solid #000;
+  border-radius: 0.2rem;
   height: 30%;
   width: 96%;
+  overflow: hidden;
 
   &__progress {
     background: #000;

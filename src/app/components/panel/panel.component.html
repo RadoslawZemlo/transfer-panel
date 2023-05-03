@@ -4,7 +4,12 @@
       <div class="tile tile--top"></div>
 
       <ng-container *ngFor="let file of files; trackBy: filesTrackBy">
-        <div (click)="addFileToDevice(file)" appHighlight class="tile">
+        <div
+          (click)="addFileToDevice(file)"
+          [appHover]="'scale(0.96)'"
+          appHighlight
+          class="tile tile--file"
+        >
           <p>
             {{ file.name }}
           </p>

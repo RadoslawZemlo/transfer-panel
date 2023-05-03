@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { PanelComponent } from '@components/panel/panel.component';
 import { FileNamePipe } from '@pipes/file-name/file-name.pipe';
 import { HighlightDirective } from '@directives/highlight/highlight.directive';
+import { HoverDirective } from '@directives/hover/hover.directive';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { HighlightDirective } from '@directives/highlight/highlight.directive';
     PanelComponent,
     FileNamePipe,
     HighlightDirective,
+    HoverDirective,
   ],
   imports: [BrowserModule, HttpClientModule],
   providers: [FilesService, DevicesService],
